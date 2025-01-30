@@ -40,6 +40,8 @@ The frontend of this application is built using vanilla JavaScript and CSS. The 
 
 The frontend requires an `images` folder containing the dataset images. These images can be generated using the `convert_png_to_dzi.sh` script. Make sure to follow the instructions in the [Scripts](#scripts) section to generate and place the images correctly.
 
+You can also download the premade Image DZI folder zip file from [here](https://pixeldrain.com/u/KJb4MVYM) and extract it in the `frontend/images` folder.
+
 
 # Backend
 
@@ -51,8 +53,8 @@ The backend is a lightweight Flask application with SQLite integration. Located 
 ### Database
 
 The backend uses two SQLite databases located in `backend/db/`:
-- `isbn_oclc_holdings.db`: Stores OCLC holdings information
-- `isbn_publisher.db`: Stores publisher information
+- `isbn_oclc_holdings.db`: Stores OCLC holdings information. Download premade db file from here [here](https://pixeldrain.com/u/35ge2AJp) (Beware of popup ads)
+- `isbn_publisher.db`: Stores publisher information. Download premade db file from here [here](https://pixeldrain.com/u/ZM38ayRs) (Beware of popup ads)
 
 ### Starting the Backend
 
@@ -96,7 +98,7 @@ This script is a modification of the original script found [here](https://softwa
 #### Prerequisites
 To run this script, you need two files in the `./scripts/data` directory:
 1. `aa_isbn13_codes_20241204T185335Z.benc.zst`: Found [here](https://software.annas-archive.li/AnnaArchivist/annas-archive/-/blob/6fdd4e92a95bfb55cce28d1faab67a91b7b10b5e/isbn_images/aa_isbn13_codes_20241204T185335Z.benc.zst). It can be generated using the code [here](https://software.annas-archive.li/AnnaArchivist/annas-archive/-/blob/369f1ae1074d8545eaeaf217ad690e505ef1aad1/allthethings/cli/views.py?page=2#L1244-1319).
-2. `oclc_holdings_per_position.jsonl`: Graciously provided by [@orangereporter](https://software.annas-archive.li/orangereporter) in this comment [here](https://software.annas-archive.li/AnnaArchivist/annas-archive/-/issues/244#note_2886).
+2. `oclc_holdings_per_position.jsonl`: Graciously provided by [@orangereporter](https://software.annas-archive.li/orangereporter) in this comment [here](https://software.annas-archive.li/AnnaArchivist/annas-archive/-/issues/244#note_2886). Backup of this file can be found [here](https://pixeldrain.com/u/aJg67HDM).
 
 #### Usage
 After obtaining both files, you can run the script to generate the raw PNG images for all datasets. These uncompressed large PNG images are necessary for creating the DZI images for the frontend.

@@ -253,7 +253,8 @@ async function showRightMenu(event) {
     viewer.clearOverlays();
     const canvas = viewer.drawer.canvas;
     const context = canvas.getContext('2d');
-    const pixelData = context.getImageData(webPoint.x, webPoint.y, 1, 1).data;
+    const dpr = window.devicePixelRatio || 1;
+    const pixelData = context.getImageData(webPoint.x * dpr, webPoint.y * dpr, 1, 1).data;
     // Calculate contrasting color by inverting the color
     const borderColor = `rgba(${255 - pixelData[0]}, ${255 - pixelData[1]}, ${255 - pixelData[2]}, 0.8)`;
     if (viewer.viewport.getZoom() >= 500) {
@@ -525,7 +526,8 @@ function getColorFromCoordinates(x, y) {
     const webpoint = viewer.viewport.imageToViewerElementCoordinates(new OpenSeadragon.Point(x, y));
     const canvas = viewer.drawer.canvas;
     const context = canvas.getContext('2d');
-    const pixelData = context.getImageData(webpoint.x, webpoint.y, 1, 1).data;
+    const dpr = window.devicePixelRatio || 1;
+    const pixelData = context.getImageData(webpoint.x * dpr, webpoint.y * dpr, 1, 1).data;
     const color = `rgba(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, ${pixelData[3] / 255})`;
 
     return { color, pixelData };
@@ -1007,8 +1009,8 @@ const mouseTracker = new OpenSeadragon.MouseTracker({
 
         const canvas = viewer.drawer.canvas;
         const context = canvas.getContext('2d');
-        const pixelData = context.getImageData(webPoint.x, webPoint.y, 1, 1).data;
-
+        const dpr = window.devicePixelRatio || 1;
+        const pixelData = context.getImageData(webPoint.x * dpr, webPoint.y * dpr, 1, 1).data;
         let message = '';
         if ((document.getElementById('dataset-selector').value === 'all_isbns_with_holdings') &&
             (pixelData[0] === 255 && pixelData[1] === 50 && pixelData[2] === 50)) {

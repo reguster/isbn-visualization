@@ -9,11 +9,11 @@ import json
 
 # Get the latest from the `codes_benc` directory in `aa_derived_mirror_metadata`:
 # https://annas-archive.org/torrents#aa_derived_mirror_metadata
-input_filename = './aa_isbn13_codes_20241204T185335Z.benc.zst'
+input_filename = './data/aa_isbn13_codes_20241204T185335Z.benc.zst'
 
 # file is provided graciously by @orangereporter 
 # at https://software.annas-archive.li/AnnaArchivist/annas-archive/-/issues/244#note_2886
-oclc_holdings_filename = './oclc_holdings_per_position.jsonl' 
+oclc_holdings_filename = './data/oclc_holdings_per_position.jsonl' 
 
 os.makedirs("images", exist_ok=True) # Create the 'images' directory if it doesn't exist
 isbn_data = bencodepy.bread(zstandard.ZstdDecompressor().stream_reader(open(input_filename, 'rb')))
