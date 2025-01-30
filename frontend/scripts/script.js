@@ -689,7 +689,11 @@ viewer.addHandler('zoom', () => {
 });
 
 viewer.addHandler('pan', () => {
-    viewer.container.style.cursor = 'grabbing';
+    if (isPanning) {
+        viewer.container.style.cursor = 'grabbing';
+    } else {
+        viewer.container.style.cursor = viewer.viewport.getZoom() > 50 ? 'pointer' : 'default';
+    }
     updateVisibleBooks();
     updateCornerValues();
     throttledAnalyzeVisibleColors();
