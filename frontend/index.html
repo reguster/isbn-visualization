@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="darkreader-lock">
+    <title>ISBNs Visualization</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@2.7.14/dist/annotorious.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/openseadragon.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@2.7.14/dist/openseadragon-annotorious.min.js"></script>
+</head>
+
+<body>
+    <div id="pixel-identifier-chart"></div>
+    <button id="toggle-pixel-identifier" class="material-icons toggle-button">expand_less</button>
+    <button id="toggle-dark-mode" class="material-icons toggle-button">dark_mode</button>
+    <button id="help-btn" class="material-icons toggle-button">help_outline</button>
+    <div id="controls">
+        <select id="dataset-selector" class="js-switcher-select">
+            <option value="all_isbns_with_holdings" selected>All ISBNs [oclc holdings] [all_isbns]</option>
+            <option value="all_isbns">All ISBNs [all_isbns]</option>
+            <option value="md5_isbns">Files in Anna’s Archive [md5]</option>
+            <option value="cadal_ssno_isbns">CADAL SSNOs [cadal_ssno]</option>
+            <option value="cerlalc_isbns">CERLALC data leak [cerlalc]</option>
+            <option value="duxiu_ssid_isbns">DuXiu SSIDs [duxiu_ssid]</option>
+            <option value="edsebk_isbns">EBSCOhost’s eBook Index [edsebk]</option>
+            <option value="gbooks_isbns">Google Books [gbooks]</option>
+            <option value="goodreads_isbns">Goodreads [goodreads]</option>
+            <option value="ia_isbns">Internet Archive [ia]</option>
+            <option value="isbndb_isbns">ISBNdb [isbndb]</option>
+            <option value="isbngrp_isbns">ISBN Global Register of Publishers [isbngrp]</option>
+            <option value="libby_isbns">Libby [libby]</option>
+            <option value="nexusstc_isbns">Nexus/STC [nexusstc]</option>
+            <option value="oclc_isbns">OCLC/Worldcat [oclc]</option>
+            <option value="ol_isbns">OpenLibrary [ol]</option>
+            <option value="rgb_isbns">Russian State Library [rgb]</option>
+            <option value="trantor_isbns">Imperial Library of Trantor [trantor]</option>
+        </select>
+        <input type="text" id="isbn-input" placeholder="Go to ISBN" enterkeyhint="go">
+        <select id="country-selector">
+            <option value="" selected>Country</option>
+        </select>
+        <div id='highlight-checkboxes'>
+            <label class="material-checkbox">
+                <input type="checkbox" id="hover-country-highlight-checkbox">
+                <span>Highlight Country on Hover</span>
+            </label>
+            <label class="material-checkbox">
+                <input type="checkbox" id="hover-publisher-highlight-checkbox">
+                <span>Highlight Publisher on Hover</span>
+            </label>
+        </div>
+    </div>
+    <div id="isbns">
+        <button id="home-btn"><span class="material-icons">home</span></button>
+        <div id="visible-books">
+            <div id="visible-books-scale">
+                <span id="visible-books-number"></span>
+            </div>
+            <div id="available-books-percentage"></div>
+        </div>
+        <div id="isbn-tooltip"></div>
+        <div id="top-left-corner" class="corner-value"></div>
+        <div id="top-right-corner" class="corner-value"></div>
+        <div id="bottom-left-corner" class="corner-value"></div>
+        <div id="bottom-right-corner" class="corner-value"></div>
+    </div>
+    <div id="loader"></div>
+    <div id="right-menu">
+        <span class="close-btn material-icons">close</span>
+        <div class="loader"></div>
+        <div id="cover-container">
+            <img id="cover-image" src="" alt="Cover Image">
+            <div id="placeholder">Book Cover</div>
+        </div>
+        <div id="right-menu-content"></div>
+    </div>
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn material-icons">close</span>
+            <h1>Instructions</h1>
+            <div class="modal-body">
+                <h2>Overview</h2>
+                <p>This application visualizes ISBN data on a large canvas. You can interact with the canvas to explore
+                    different datasets, view detailed information about specific ISBNs, and more. The visualization is
+                    designed to help you understand the distribution and availability of books across various datasets.
+                </p>
+
+                <h2>Controls</h2>
+                <ul>
+                    <li><strong>Dataset Selector:</strong> Use the dropdown to select different datasets to visualize.
+                        Each dataset represents a different collection of ISBNs, such as all ISBNs, ISBNs with holdings,
+                        or specific collections like Google Books or Internet Archive.</li>
+                    <li><strong>ISBN Input:</strong> Enter a 13-digit ISBN to jump directly to its location on the
+                        canvas. This allows you to quickly find and view detailed information about a specific book.
+                    </li>
+                    <li><strong>Country Selector:</strong> Select a country to highlight all ISBNs associated with that
+                        country. This feature helps you explore the geographical distribution of books.</li>
+                    <li><strong>Highlight Country on Hover:</strong> Check this box to highlight countries when you
+                        hover over ISBNs. This visual aid makes it easier to identify the origin of books.</li>
+                    <li><strong>Highlight Publisher on Hover:</strong> Check this box to highlight publishers when you
+                        hover over ISBNs. This feature helps you see the distribution of books from specific publishers.
+                    </li>
+                    <li><strong>Pixel Identifier Chart:</strong> Click to show or hide the pixel identifier chart. This
+                        chart explains the color coding used in the visualization.</li>
+                    <li><strong>Toggle Dark Mode:</strong> Click to switch between light and dark modes. Your preference
+                        is saved locally and will be applied the next time you visit the app.</li>
+                    <li><strong>Help Button:</strong> Click to open this help modal. This modal provides detailed
+                        instructions and information about using the app.</li>
+                </ul>
+
+                <h2>Interactions</h2>
+                <ul>
+                    <li><strong>Zoom:</strong> Use the mouse wheel or pinch to zoom in and out. Zooming in allows you to
+                        see more detailed information about specific ISBNs, while zooming out gives you a broader view
+                        of the dataset.</li>
+                    <li><strong>Pan:</strong> Click and drag to move around the canvas. Panning helps you navigate the
+                        large visualization area.</li>
+                    <li><strong>Click:</strong> Left Click or Right-click on the specific pixel to open the right menu
+                        with detailed information about the ISBN at that location. This menu provides comprehensive
+                        details about the selected book.</li>
+                    <li><strong>Annotations:</strong> Press and hold shift key to draw annotations. Use the annotation
+                        tool to add comments to specific areas of the canvas Annotations are saved locally in your
+                        browser.</li>
+                    <li><strong>Home Button:</strong> Click to reset the view to the default zoom level. This is useful
+                        if you get lost or want to start over.</li>
+                </ul>
+
+                <h2>Current View Data Analytics</h2>
+                <p>Present at top center of the canvas, it provides real-time analytics for books currently in view,
+                    helping you analyze the distribution and availability patterns across different regions of the
+                    dataset.</p>
+
+                <h2>Right Menu</h2>
+                <p>The right menu provides detailed information about the selected ISBN, including:</p>
+                <ul>
+                    <li><strong>ISBN:</strong> The full ISBN number. This is the unique identifier for the book.</li>
+                    <li><strong>Country:</strong> The country associated with the ISBN. This information helps you
+                        understand the geographical origin of the book.</li>
+                    <li><strong>Authors:</strong> The authors of the book. This section lists all the authors who
+                        contributed to the book.</li>
+                    <li><strong>Publish Date:</strong> The publication date of the book. This information indicates when
+                        the book was published.</li>
+                    <li><strong>Publishers:</strong> The publishers of the book. This section lists the organizations
+                        responsible for publishing the book.</li>
+                    <li><strong>Number of Pages:</strong> The number of pages in the book. This information gives you an
+                        idea of the book's length.</li>
+                    <li><strong>OCLC ID:</strong> The OCLC ID if available. This identifier is used by libraries to
+                        catalog the book.</li>
+                    <li><strong>Holdings:</strong> The number of libraries holding the book (According to Worldcat).
+                        This information indicates the book's availability in libraries.</li>
+                    <li><strong>Cover Image:</strong> The cover image of the book if available. This visual aid helps
+                        you identify the book.</li>
+                </ul>
+
+                <h2>Corner Values</h2>
+                <p>The corner values display the ISBNs at the top-left, top-right, bottom-left, and bottom-right corners
+                    of the visible area. These values update as you zoom and pan, providing a quick reference for the
+                    range of ISBNs in view.</p>
+
+                <h2>Keyboard Shortcuts</h2>
+                <ul>
+                    <li><strong>Shift:</strong> Hold to enable crosshair cursor for precise annotation selection. This
+                        feature helps you make accurate annotations.</li>
+                    <li><strong>Ctrl + Alt + L:</strong> Clear all annotations. This shortcut allows you to quickly
+                        remove all annotations from the canvas.</li>
+                </ul>
+
+                <h2>Mobile Instructions</h2>
+                <p>The app is fully functional on mobile devices. Here are some tips for using the app on a mobile
+                    device:</p>
+                <ul>
+                    <li><strong>Zoom:</strong> Pinch to zoom in and out. Or Double tap to zoom in.</li>
+                    <li><strong>Pan:</strong> Swipe to move around the canvas. This gesture helps you navigate the large
+                        visualization area.</li>
+                    <li><strong>Long Press:</strong> Long press on the specific pixel to open the right menu with
+                        detailed information about the ISBN at that location. This menu provides comprehensive details
+                        about the selected book.</li>
+                    <p> Some functionalities are disabled on mobile devices, such as live view data analysis,
+                        country/publisher highlight and annotations.</p>
+                </ul>
+                <p><strong>Note:</strong> If you are using the Brave browser, please disable Brave Shields as it might
+                    not allow live view data analysis. Other adblockers might also interfere with the functionality.</p>
+            </div>
+        </div>
+    </div>
+    <script src="./scripts/metadata.js"></script>
+    <script src="./scripts/script.js"></script>
+</body>
+
+</html>

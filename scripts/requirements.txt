@@ -1,0 +1,5 @@
+bencode.py
+isbnlib
+Pillow
+tqdm
+zstandard

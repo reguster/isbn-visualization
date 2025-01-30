@@ -1,0 +1,738 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+body.menu-open {
+    padding-right: 20%;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode #controls,
+body.dark-mode #right-menu,
+body.dark-mode #pixel-identifier-chart {
+    /* background-color: #1e1e1e; */
+    color: #ffffff;
+}
+
+body.dark-mode .material-icons {
+    color: #ffffff;
+}
+
+body.dark-mode #dataset-selector,
+body.dark-mode #isbn-input,
+body.dark-mode #country-selector {
+    background-color: #333;
+    color: #ffffff;
+    border: 0.0625em solid #555;
+}
+
+body.dark-mode #isbn-input:focus {
+    background-color: #444;
+}
+
+body.dark-mode #isbns {
+    background-color: #333;
+    border: 0.0625em solid #555;
+}
+
+body.dark-mode .material-checkbox>span::before {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .material-checkbox>input:checked+span::before,
+body.dark-mode .material-checkbox>input:indeterminate+span::before {
+    border-color: rgb(33, 150, 243);
+    background-color: rgb(33, 150, 243);
+}
+
+body.dark-mode .material-checkbox>input:checked+span::after,
+body.dark-mode .material-checkbox>input:indeterminate+span::after {
+    border-color: rgb(255, 255, 255);
+}
+
+body.dark-mode .material-checkbox>span {
+    color: #ffffff;
+}
+
+body.dark-mode a {
+    color: #1e90ff;
+}
+
+#controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1em;
+    width: calc(100% - 2em);
+    max-width: 60em;
+    margin-bottom: 1.25em;
+    padding: 0 1em;
+    margin-top: 1em;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+@media (max-width: 767px) {
+    #controls {
+        margin-top: 5em;
+    }
+
+    #isbns {
+        margin-bottom: 1em;
+        width: 90vw !important;
+    }
+
+    #right-menu {
+        width: 97%;
+    }
+
+    #visible-books {
+        display: none;
+    }
+
+    #highlight-checkboxes {
+        display: none !important;
+    }
+
+    #isbn-tooltip {
+        display: none !important;
+    }
+}
+
+
+#dataset-selector,
+#isbn-input,
+#country-selector {
+    flex: 1;
+    min-width: 10em;
+    padding: 0.625em;
+    border: 0.0625em solid #ccc;
+    border-radius: 0.25em;
+    background-color: #fff;
+    box-shadow: 0 0.125em 0.25em rgba(0, 0, 0, 0.1);
+    font-size: 1em;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+#isbns {
+    width: 80vw;
+    height: 80vh;
+    border: 0.0625em solid black;
+    background-color: #fff;
+    box-shadow: 0 0.125em 0.25em rgba(0, 0, 0, 0.1);
+    position: relative;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.openseadragon-container {
+    border-radius: 10px;
+}
+
+#isbns.hover-cursor {
+    cursor: pointer;
+}
+
+#isbn-details,
+#cover-container,
+#cover-image,
+#placeholder,
+#loader {
+    display: none;
+}
+
+#isbn-details {
+    margin-top: 1.25em;
+    padding: 0.625em;
+    border: 0.0625em solid black;
+}
+
+#isbn-details img {
+    max-width: 12.5em;
+    margin-right: 1.25em;
+}
+
+#cover-container {
+    width: 15em;
+    margin: 0.625em auto;
+    margin-top: 2em;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f3f3;
+    border: 0.0625em solid #ccc;
+}
+
+#cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#placeholder {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.875em;
+    color: #999;
+}
+
+#loader {
+    border: 0.5em solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 0.5em solid #3498db;
+    width: 2.5em;
+    height: 2.5em;
+    animation: spin 2s linear infinite;
+    margin: 1.25em auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#fullscreen-btn {
+    position: absolute;
+    top: 0.625em;
+    right: 0.625em;
+    padding: 0.625em;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5em;
+    height: 2.5em;
+}
+
+#fullscreen-btn .material-icons {
+    font-size: 1.5em;
+}
+
+#home-btn {
+    position: absolute;
+    left: 0.625em;
+    padding: 0.625em;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5em;
+    height: 2.5em;
+}
+
+#home-btn {
+    top: 0.625em;
+}
+
+.material-icons,
+.material-icons,
+#home-btn .material-icons {
+    font-size: 1.5em;
+}
+
+body.dark-mode .material-icons {
+    color: #ffffff;
+}
+
+#right-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%;
+    height: 100%;
+    background: white;
+    box-shadow: -0.25em 0 0.5em rgba(0, 0, 0, 0.1);
+    border-left: 0.0625em solid #ccc;
+    display: none;
+    padding: 1em;
+    z-index: 1000;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+    overflow-y: auto;
+}
+
+body.dark-mode #right-menu {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+@media (min-width: 768px) {
+    #right-menu {
+        width: 20%;
+    }
+}
+
+#right-menu .close-btn {
+    position: absolute;
+    top: 0.625em;
+    left: 0.625em;
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+#right-menu .loader {
+    border: 0.5em solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 0.5em solid #3498db;
+    width: 2.5em;
+    height: 2.5em;
+    animation: spin 2s linear infinite;
+    margin: 1.25em auto;
+}
+
+#right-menu-content {
+    padding: 0.625em;
+    margin-top: 0.5em;
+}
+
+#visible-books {
+    position: absolute;
+    top: 0.625em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1000;
+    text-align: -webkit-center;
+    cursor: default;
+}
+
+#visible-books-scale {
+    width: 11em;
+    height: 0.125em;
+    background-color: white;
+    margin: 0.625em;
+    position: relative;
+}
+
+#available-books-percentage {
+    margin-top: 1.5em;
+}
+
+#visible-books-scale::before,
+#visible-books-scale::after {
+    content: "";
+    position: absolute;
+    top: -0.4375em;
+    width: 0.125em;
+    height: 1em;
+    background-color: white;
+}
+
+#visible-books-scale::before {
+    left: 0;
+}
+
+#visible-books-scale::after {
+    right: 0;
+}
+
+#visible-books-number {
+    position: absolute;
+    bottom: -1.0625em;
+    left: 50%;
+    transform: translateX(-50%);
+    user-select: none;
+}
+
+#isbn-tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.5em;
+    border-radius: 0.25em;
+    font-size: 0.875em;
+    display: none;
+    z-index: 1002;
+    user-select: none;
+}
+
+.material-checkbox {
+    z-index: 0;
+    position: relative;
+    display: inline-block;
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+    font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.material-checkbox>input {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    z-index: -1;
+    position: absolute;
+    left: -10px;
+    top: -8px;
+    display: block;
+    margin: 0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+    box-shadow: none;
+    outline: none;
+    opacity: 0;
+    transform: scale(1);
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.2s;
+}
+
+.material-checkbox>span {
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+    user-select: none;
+}
+
+.material-checkbox>span::before {
+    content: "";
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 3px 11px 3px 1px;
+    border: solid 2px;
+    border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+    border-radius: 2px;
+    width: 18px;
+    height: 18px;
+    vertical-align: top;
+    transition: border-color 0.2s, background-color 0.2s, background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.material-checkbox>span::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 1px;
+    width: 10px;
+    height: 5px;
+    border: solid 2px transparent;
+    border-right: none;
+    border-top: none;
+    transform: translate(3px, 4px) rotate(-45deg);
+}
+
+.material-checkbox>input:checked,
+.material-checkbox>input:indeterminate {
+    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+}
+
+.material-checkbox>input:checked+span::before,
+.material-checkbox>input:indeterminate+span::before {
+    border-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+}
+
+.material-checkbox>input:checked+span::after,
+.material-checkbox>input:indeterminate+span::after {
+    border-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+}
+
+.material-checkbox>input:indeterminate+span::after {
+    border-left: none;
+    transform: translate(4px, 3px);
+}
+
+.material-checkbox:hover>input {
+    opacity: 0.04;
+}
+
+.material-checkbox>input:focus {
+    opacity: 0.12;
+}
+
+.material-checkbox:hover>input:focus {
+    opacity: 0.16;
+}
+
+.material-checkbox>input:active {
+    opacity: 1;
+    transform: scale(0);
+    transition: transform 0s, opacity 0s;
+}
+
+.material-checkbox>input:active+span::before {
+    border-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+}
+
+.material-checkbox>input:checked:active+span::before {
+    border-color: transparent;
+    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+}
+
+.material-checkbox>input:disabled {
+    opacity: 0;
+}
+
+.material-checkbox>input:disabled+span {
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    cursor: initial;
+}
+
+.material-checkbox>input:disabled+span::before {
+    border-color: currentColor;
+}
+
+.material-checkbox>input:checked:disabled+span::before,
+.material-checkbox>input:indeterminate:disabled+span::before {
+    border-color: transparent;
+    background-color: currentColor;
+}
+
+body.dark-mode .material-checkbox>span::before {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .material-checkbox>input:checked+span::before,
+body.dark-mode .material-checkbox>input:indeterminate+span::before {
+    border-color: rgb(33, 150, 243);
+    background-color: rgb(33, 150, 243);
+}
+
+body.dark-mode .material-checkbox>input:checked+span::after,
+body.dark-mode .material-checkbox>input:indeterminate+span::after {
+    border-color: rgb(255, 255, 255);
+}
+
+body.dark-mode .material-checkbox>span {
+    color: #ffffff;
+}
+
+.corner-value {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+#pixel-identifier-chart {
+    position: absolute;
+    font-size: 0.85em;
+    top: 1em;
+    left: 1em;
+    background-color: rgba(255, 255, 255, 1);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.1em;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1002;
+    user-select: none;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode #pixel-identifier-chart {
+    background-color: #2f2f2f;
+    color: #ffffff;
+}
+
+.color-box {
+    width: 1.2em;
+    height: 1.2em;
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+#pixel-identifier-chart span {
+    vertical-align: middle;
+    margin-right: 20px;
+}
+
+.pixel-identifier-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.close-btn-pixel-identifier {
+    position: absolute;
+    top: 0.25em;
+    right: 0em;
+    cursor: pointer;
+    font-size: 1.3em;
+    background: none;
+    border: none;
+    color: black;
+}
+
+.a9s-inner {
+    fill: #31596f87 !important;
+}
+
+#cover-container,
+#cover-image {
+    border-radius: 10px;
+}
+
+.toggle-button {
+    position: absolute;
+    top: 1em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+#toggle-pixel-identifier {
+    left: 1em;
+    display: none;
+}
+
+#toggle-dark-mode {
+    right: 1em;
+}
+
+#help-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 1200px;
+    border-radius: 10px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal-body ul {
+    margin-bottom: 20px;
+}
+
+.modal-body ul li {
+    margin-bottom: 10px;
+}
+
+.modal .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+body.dark-mode .modal .close-btn {
+    color: #ffffff;
+}
+
+#help-btn {
+    right: 3em;
+}
+
+#highlight-checkboxes {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 3em;
+}
+
+/* Custom scrollbar styles for the modal */
+.modal-body::-webkit-scrollbar {
+    width: 4px;
+    /* Thinner scrollbar */
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Custom scrollbar styles for the right menu */
+#right-menu::-webkit-scrollbar {
+    width: 4px;
+    /* Thinner scrollbar */
+}
+
+#right-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#right-menu::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+#right-menu::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

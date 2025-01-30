@@ -1,0 +1,6 @@
+*.db
+*.zst
+*.json
+*.jsonl
+*.seekable
+*.zip
