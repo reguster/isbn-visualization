@@ -74,6 +74,11 @@ body.dark-mode .material-checkbox>span {
 
 body.dark-mode a {
     color: #1e90ff;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
 }
 
 #controls {

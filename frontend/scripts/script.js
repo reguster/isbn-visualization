@@ -329,17 +329,20 @@ async function showRightMenu(event) {
 
         if (openLibraryResponse.ok) {
             const data = await openLibraryResponse.json();
-            let authorNames = ['Unknown Author'];
+            let authorNames = [];
             if (data.authors && data.authors.length > 0) {
-                authorNames = await Promise.all(data.authors.map(async author => {
-                    const authorResponse = await fetch(`https://openlibrary.org${author.key}.json`);
-                    if (authorResponse.ok) {
-                        const authorData = await authorResponse.json();
-                        return authorData.name;
-                    } else {
-                        return 'Unknown Author';
+                authorNames = (await Promise.all(data.authors.map(async author => {
+                    try {
+                        const authorResponse = await fetch(`https://openlibrary.org${author.key}.json`);
+                        if (authorResponse.ok) {
+                            const authorData = await authorResponse.json();
+                            return authorData.name;
+                        }
+                        return null;
+                    } catch (error) {
+                        return null;
                     }
-                }));
+                }))).filter(name => name !== null);
             }
 
             const openLibraryData = {
@@ -432,14 +435,12 @@ async function showRightMenu(event) {
 
 
 async function displayRightMenuContent(data) {
-    let details = `
-        <h1>${data.title}</h1>
-        <p><strong>ISBN:</strong> ${data.isbn}</p>
-        <p><strong>Country:</strong> ${data.country}</p>
-        <p><strong>Authors:</strong> ${data.authors.map(author => `<a href="https://annas-archive.org/search?q=${author}" target="_blank">${author}</a>`).join(', ')}</p>
-        <p><strong>Publish Date:</strong> ${data.publish_date}</p>
-        <p><strong>Publishers:</strong> ${data.publishers.join(', ')}</p>
-    `;
+    let details = `<h1>${data.title || ''}</h1>`;
+    if (data.isbn) details += `<p><strong>ISBN:</strong> ${data.isbn}</p>`;
+    if (data.country) details += `<p><strong>Country:</strong> ${data.country}</p>`;
+    if (data.authors && data.authors.length > 0) details += `<p><strong>Authors:</strong> ${data.authors.map(author => `<a href="https://annas-archive.org/search?q=${author}" target="_blank">${author}</a>`).join(', ')}</p>`;
+    if (data.publish_date) details += `<p><strong>Publish Date:</strong> ${data.publish_date}</p>`;
+    if (data.publishers && data.publishers.length > 0) details += `<p><strong>Publishers:</strong> ${data.publishers.join(', ')}</p>`;
     if (data.number_of_pages !== undefined) {
         details += `<p><strong>Number of Pages:</strong> ${data.number_of_pages}</p>`;
     }
