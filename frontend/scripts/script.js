@@ -75,6 +75,7 @@ function changeDataset(dataset) {
     viewer.addOnceHandler('open', () => viewer.clearOverlays());
     viewer.open(tileSource);
     currentDataset = dataset; // Update current dataset
+    anno.clearAnnotations(); // Clear old annotations
     loadAnnotations(); // Load new dataset
 }
 
