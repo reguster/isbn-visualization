@@ -7,7 +7,7 @@ document.getElementById('isbns').addEventListener('contextmenu', event => event.
 const viewer = OpenSeadragon({
     id: "isbns",
     prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/images/",
-    tileSources: "./images/DZI/all_isbns_with_holdings/all_isbns_with_holdings.dzi", 
+    tileSources: "./images/DZI/all_isbns_with_holdings/all_isbns_with_holdings.dzi",
     maxZoomPixelRatio: 300,
     imageSmoothingEnabled: false,
     preload: true,
@@ -20,8 +20,8 @@ const viewer = OpenSeadragon({
     showNavigator: !('ontouchstart' in window || navigator.maxTouchPoints) && window.innerWidth >= 500,
     navigatorPosition: "ABSOLUTE",
     navigatorTop: "60px",
-    navigatorLeft: "20px", 
-    navigatorHeight: "150px",
+    navigatorLeft: "20px",
+    navigatorHeight: "120px",
     navigatorWidth: "150px",
     navigatorAutoFade: true,
 });
@@ -29,7 +29,8 @@ const viewer = OpenSeadragon({
 const annoConfig = {
     widgets: [
         'COMMENT'
-    ]
+    ],
+    gigapixelMode: true,
 }
 const anno = OpenSeadragon.Annotorious(viewer, annoConfig);
 
@@ -58,7 +59,14 @@ function createLoader() {
     return loader;
 }
 
+let currentDataset = document.getElementById('dataset-selector').value;
+
+function getAnnotationsKey(dataset) {
+    return `annotations_${dataset}`;
+}
+
 function changeDataset(dataset) {
+    saveAnnotations(); // Save old dataset
     loader.style.display = 'block';
     const tileSource = `./images/DZI/${dataset}/${dataset}.dzi`;
     viewer.clearOverlays();
@@ -66,6 +74,8 @@ function changeDataset(dataset) {
     document.body.classList.remove('menu-open');
     viewer.addOnceHandler('open', () => viewer.clearOverlays());
     viewer.open(tileSource);
+    currentDataset = dataset; // Update current dataset
+    loadAnnotations(); // Load new dataset
 }
 
 function allowRightClick(viewer, webPoint) {
@@ -94,15 +104,13 @@ viewer.addHandler('canvas-release', () => {
     }, 10);
 });
 
-const annotationsKey = 'annotations';
-
 function saveAnnotations() {
     const annotations = anno.getAnnotations();
-    localStorage.setItem(annotationsKey, JSON.stringify(annotations));
+    localStorage.setItem(getAnnotationsKey(currentDataset), JSON.stringify(annotations));
 }
 
 function loadAnnotations() {
-    const savedAnnotations = localStorage.getItem(annotationsKey);
+    const savedAnnotations = localStorage.getItem(getAnnotationsKey(currentDataset));
     if (savedAnnotations) {
         const annotations = JSON.parse(savedAnnotations);
         annotations.forEach(annotation => anno.addAnnotation(annotation));
@@ -130,11 +138,9 @@ anno.on('createAnnotation', function (annotation, overrideId) {
 });
 anno.on('startSelection', function (point) {
     viewer.container.style.cursor = 'crosshair';
-    console.log('creating Selection');
 });
 anno.on('createSelection', function (selection) {
     viewer.container.style.cursor = 'default';
-    console.log('selection created');
 });
 
 let shiftButtonPressed = false;
@@ -145,7 +151,7 @@ document.addEventListener('keydown', event => {
     }
     if ((event.ctrlKey && event.altKey && (event.key === 'l' || event.key === 'L'))) {
         anno.clearAnnotations();
-        localStorage.removeItem(annotationsKey);
+        localStorage.removeItem(getAnnotationsKey(currentDataset));
     }
 });
 
@@ -301,7 +307,6 @@ async function showRightMenu(event) {
     document.getElementById('right-menu-content').innerHTML = details;
 
     if (!('ontouchstart' in window || navigator.maxTouchPoints) && pixelData[0] == 0 && pixelData[1] == 0 && pixelData[2] == 0) {
-        console.log('ISBN doesn\'t exist');
         document.querySelector('#right-menu .loader').style.display = 'none';
         return;
     }
@@ -952,7 +957,7 @@ const mouseTracker = new OpenSeadragon.MouseTracker({
         if (isPanning) {
             return;
         }
-        if (document.querySelector('.a9s-annotation:hover') || shiftButtonPressed) {
+        if (document.querySelector('.a9s-annotation:hover') || shiftButtonPressed || document.querySelector('.openseadragon-container .navigator:hover')) {
             updateTooltipDisplay(false);
             viewer.clearOverlays();
             return;
@@ -1116,6 +1121,7 @@ const mouseTracker = new OpenSeadragon.MouseTracker({
                 location: viewer.viewport.imageToViewportRectangle(x, y, 1, 1),
             });
             hoverOverlay = overlay;
+            viewer.container.style.cursor = 'pointer';
         }
     }, 20),
     leaveHandler: function () {

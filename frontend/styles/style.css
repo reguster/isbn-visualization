@@ -151,6 +151,12 @@ a {
     border-radius: 10px;
 }
 
+.openseadragon-container .navigator {
+    border-radius: 7px;
+    border: none !important;
+}
+
+
 #isbns.hover-cursor {
     cursor: pointer;
 }

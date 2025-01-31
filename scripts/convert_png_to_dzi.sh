@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Static tile size
-TILE_SIZE=2048
+TILE_SIZE=1700
 
 # Input and output file paths
 INPUT_PATH="./images/PNG"
@@ -17,12 +17,11 @@ for file in $INPUT_PATH/*.png; do
 
     # Use the static tile size
     tile_size=$TILE_SIZE
-    echo "Using static tile size: $tile_size"
+    echo "Using tile size: $tile_size"
 
     # Run the dzsave command
-    echo "Running dzsave command..."
-    # {path_for_windows}/vips/bin/vips.exe dzsave "$file" "$OUTPUT_PATH/$base_name/$base_name" --suffix .png --vips-progress --tile-size $tile_size --overlap 0
-    vips dzsave "$file" "$OUTPUT_PATH/$base_name/$base_name" --suffix .png --vips-progress --tile-size $tile_size --overlap 0
+    # {path_for_windows}/vips/bin/vips.exe dzsave "$file" "$OUTPUT_PATH/$base_name/$base_name" --suffix .webp[lossless] --vips-progress --tile-size $tile_size --overlap 0
+    vips dzsave "$file" "$OUTPUT_PATH/$base_name/$base_name" --suffix .webp[lossless] --vips-progress --tile-size $tile_size --overlap 0
 
     echo "Processed $file with tile size $tile_size"
 done
