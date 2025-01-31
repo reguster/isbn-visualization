@@ -204,7 +204,7 @@ async function showRightMenu(event) {
     if (!allowRightClick(viewer, webPoint)) {
         return;
     }
-
+    document.getElementById('isbns').style.width = '70vw';
     const viewportPoint = viewer.viewport.pointFromPixel(webPoint);
     const imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
 
@@ -215,9 +215,7 @@ async function showRightMenu(event) {
         viewer.viewport.panTo(viewportPoint, false);
         tooltip.style.display = 'none';
     }, 100);
-    setTimeout(() => {
-        document.getElementById('isbns').style.width = '70vw';
-    }, 2000);
+
     const position = y * 50000 + x;
 
     if (x < 0 || x >= 50000 || y < 0 || y >= 40000) {
@@ -243,6 +241,9 @@ async function showRightMenu(event) {
 
     const rightMenu = document.getElementById('right-menu');
     rightMenu.style.display = 'block';
+    setTimeout(() => {
+        rightMenu.classList.add('open');
+    }, 10); // Slight delay to ensure the display change is applied
     document.getElementById('toggle-dark-mode').style.display = 'none';
     document.getElementById('help-btn').style.display = 'none';
     document.body.classList.add('menu-open');
@@ -481,19 +482,26 @@ async function displayRightMenuContent(data) {
 
 }
 
-document.querySelector('#right-menu .close-btn').addEventListener('click', () => {
-    document.getElementById('right-menu').style.display = 'none';
+function closeRightMenu() {
+    const rightMenu = document.getElementById('right-menu');
     if (!('ontouchstart' in window || navigator.maxTouchPoints)) {
         document.getElementById('isbns').style.width = '80vw';
     }
-    document.body.classList.remove('menu-open');
+    rightMenu.classList.remove('open');
+    setTimeout(() => {
+        rightMenu.style.display = 'none';
+        document.body.classList.remove('menu-open');
+    }, 300); // Match the duration of the CSS transition
+
     if ('ontouchstart' in window || navigator.maxTouchPoints) {
         document.getElementById('home-btn').style.display = 'block';
         if (document.getElementById('pixel-identifier-chart').style.display == 'none')
             document.getElementById('toggle-pixel-identifier').style.display = 'block';
     }
-    document.getElementById('toggle-dark-mode').style.display = 'block';
-    document.getElementById('help-btn').style.display = 'block';
+}
+
+document.querySelector('#right-menu .close-btn').addEventListener('click', () => {
+    closeRightMenu();
 });
 
 function updateVisibleBooks(forcedValue = 0) {
@@ -783,11 +791,9 @@ document.addEventListener('DOMContentLoaded', function () {
         viewer.forceRedraw();
     });
 
-    const rightMenu = document.getElementById('right-menu');
     const closeBtn = document.querySelector('#right-menu .close-btn');
     closeBtn.addEventListener('click', () => {
-        rightMenu.style.display = 'none';
-        document.body.classList.remove('menu-open');
+        closeRightMenu();
     });
 
     const countrySelector = document.getElementById('country-selector');
